@@ -1,6 +1,7 @@
 import tweepy
 import os
 from dotenv import load_dotenv
+import datetime
 
 # Load environment variables from .env file
 load_dotenv()
@@ -25,4 +26,5 @@ def write_news_tweet(title, url, content):
     )
 
 if __name__ == '__main__':
+    print(datetime.datetime.utcnow())
     write_news_tweet("【参加】日本、グローバルAI安全ネットワークへ ", "https://www.wired.com/story/us-forming-global-ai-safety-network-key-allies/", "日本、米国、英国、カナダ、シンガポール、欧州AIオフィスとともにグローバルAI安全ネットワークに参加。AIリスクの評価・軽減、責任あるAI開発を推進する国際的な取り組みです。 ")
