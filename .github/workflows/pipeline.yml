@@ -1,7 +1,10 @@
 name: Pipeline
+
 on:
   schedule:
     - cron: '0 0 * * *' # Run every day at midnight UTC
+  workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -9,6 +12,7 @@ jobs:
       image: uliba/news_twitter_bot:latest
 
     steps:
+      - uses: actions/checkout@v4
       - name: Set Environment Variables
         shell: bash
         env:
@@ -27,11 +31,8 @@ jobs:
           echo "CONSUMER_SECRET=$CONSUMER_SECRET" >> .env
           echo "GOOGLE_API_KEY=$GOOGLE_API_KEY" >> .env
           echo "NEWS_API_ORG_API_KEY=$NEWS_API_ORG_API_KEY" >> .env
+          cat .env
 
       - name: Run python script
         run: |
           python3 main.py
-          
-defaults:
-  run:
-    shell: bash
