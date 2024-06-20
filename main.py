@@ -22,7 +22,9 @@ if __name__ == "__main__":
         if article['date'] != today_utc:
             continue
         try:
+            time.sleep(60)
             news_content = fetch_news_content(article["url"])
+            
             article["content"] = extractArticle(article["title"]+news_content)
             if "True" not in isArticleValid(article["content"]):
                 continue
@@ -32,8 +34,6 @@ if __name__ == "__main__":
             article["final_content"] = finalizeArticle(article["translated_summarized_content"])
             article["final_title"] = finalizeTitle(article["translated_summarized_content"])
             write_news_tweet(article["final_title"], article["url"], article["final_content"])
-            time.sleep(60)
         except Exception as e:
             print(e)
-            time.sleep(60)
             continue
