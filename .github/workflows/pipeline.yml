@@ -14,9 +14,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Synchronize System Clock
-        run: chronyd -q 'server time.google.com iburst'
-
       - name: Set Environment Variables
         env:
           BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }}

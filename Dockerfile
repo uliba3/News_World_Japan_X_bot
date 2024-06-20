@@ -1,9 +1,7 @@
 FROM python:3.9
 
-RUN apt-get update && apt-get install -y chrony
-
 # Install tweepy
-RUN pip install tweepy python-dotenv google-generativeai requests beautifulsoup4
+RUN pip install tweepy python-dotenv google-generativeai requests beautifulsoup4 pytz
 
 # Add your remaining Dockerfile instructions here
 
