@@ -23,7 +23,8 @@ def write_news_tweet(title, url, content):
     tweet_text = f"{title}{url}\n\n{content}"
     print(tweet_text)
     response = client.create_tweet(
-        text=tweet_text
+        text=tweet_text,
+        user_auth=True
     )
 
 if __name__ == '__main__':
