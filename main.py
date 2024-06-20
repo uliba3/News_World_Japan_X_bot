@@ -15,11 +15,11 @@ articles = [{
 }]
 
 if __name__ == "__main__":
-    today = datetime.datetime.now().date()
+    today_utc = datetime.datetime.now(datetime.timezone.utc).date()
     articles = []
     articles = add_articles(articles)
     for article in articles:
-        if article['date'] != today:
+        if article['date'] != today_utc:
             continue
         try:
             news_content = fetch_news_content(article["url"])

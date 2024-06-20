@@ -19,6 +19,7 @@ def add_all_articles(articles):
         data = json.loads(response.read().decode("utf-8"))
         all_articles = data["articles"]
     for article in all_articles:
+        print(article['publishedAt'])
         date = datetime.datetime.strptime(article['publishedAt'], "%Y-%m-%dT%H:%M:%SZ").date()
         articles.append({
             "title": article['title'],
@@ -36,6 +37,7 @@ def add_headline_articles(articles):
         data = json.loads(response.read().decode("utf-8"))
         all_articles = data["articles"]
     for article in all_articles:
+        print(article['publishedAt'])
         date = datetime.datetime.strptime(article['publishedAt'], "%Y-%m-%dT%H:%M:%SZ").date()
         articles.append({
             "title": article['title'],
