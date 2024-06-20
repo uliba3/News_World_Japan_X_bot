@@ -1,0 +1,38 @@
+name: Pipeline
+on:
+  schedule:
+    - cron: '0 0 * * *' # Run every day at midnight UTC
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: uliba/news_twitter_bot:latest
+
+    steps:
+      - shell: bash
+        env:
+          BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }}
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
+          CONSUMER_KEY: ${{ secrets.CONSUMER_KEY }}
+          CONSUMER_SECRET: ${{ secrets.CONSUMER_SECRET }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          NEWS_API_ORG_API_KEY: ${{ secrets.NEWS_API_ORG_API_KEY }}
+          
+      - name: Create .env file
+        run: |
+          echo "BEARER_TOKEN=${{ secrets.BEARER_TOKEN }}" > .env
+          echo "ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}" >> .env
+          echo "ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }}" >> .env
+          echo "CONSUMER_KEY=${{ secrets.CONSUMER_KEY }}" >> .env
+          echo "CONSUMER_SECRET=${{ secrets.CONSUMER_SECRET }}" >> .env
+          echo "GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}" >> .env
+          echo "NEWS_API_ORG_API_KEY=${{ secrets.NEWS_API_ORG_API_KEY }}" >> .env
+
+      - name: Run python script
+        run: |
+          python3 main.py
+          
+defaults:
+  run:
+    shell: bash
