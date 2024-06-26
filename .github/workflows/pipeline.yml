@@ -16,21 +16,19 @@ jobs:
 
       - name: Set Environment Variables
         env:
-          BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }}
-          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
-          CONSUMER_KEY: ${{ secrets.CONSUMER_KEY }}
-          CONSUMER_SECRET: ${{ secrets.CONSUMER_SECRET }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           NEWS_API_ORG_API_KEY: ${{ secrets.NEWS_API_ORG_API_KEY }}
+          NEUTRAL_ACCESS_TOKEN: ${{ secrets.NEUTRAL_ACCESS_TOKEN }}
+          NEUTRAL_ACCESS_TOKEN_SECRET: ${{ secrets.NEUTRAL_ACCESS_TOKEN_SECRET }}
+          NEUTRAL_CONSUMER_KEY: ${{ secrets.NEUTRAL_CONSUMER_KEY }}
+          NEUTRAL_CONSUMER_SECRET: ${{ secrets.NEUTRAL_CONSUMER_SECRET }}
         run: |
-          echo "BEARER_TOKEN=$BEARER_TOKEN" > .env
-          echo "ACCESS_TOKEN=$ACCESS_TOKEN" >> .env
-          echo "ACCESS_TOKEN_SECRET=$ACCESS_TOKEN_SECRET" >> .env
-          echo "CONSUMER_KEY=$CONSUMER_KEY" >> .env
-          echo "CONSUMER_SECRET=$CONSUMER_SECRET" >> .env
-          echo "GOOGLE_API_KEY=$GOOGLE_API_KEY" >> .env
+          echo "GOOGLE_API_KEY=$GOOGLE_API_KEY" > .env
           echo "NEWS_API_ORG_API_KEY=$NEWS_API_ORG_API_KEY" >> .env
+          echo "NEUTRAL_ACCESS_TOKEN=$NEUTRAL_ACCESS_TOKEN" >> .env
+          echo "NEUTRAL_ACCESS_TOKEN_SECRET=$NEUTRAL_ACCESS_TOKEN_SECRET" >> .env
+          echo "NEUTRAL_CONSUMER_KEY=$NEUTRAL_CONSUMER_KEY" >> .env
+          echo "NEUTRAL_CONSUMER_SECRET=$NEUTRAL_CONSUMER_SECRET" >> .env
           cat .env
 
       - name: Run python script
