@@ -14,27 +14,27 @@ GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 
 genai.configure(api_key=GOOGLE_API_KEY)
 
-modelFlash = genai.GenerativeModel('gemini-1.5-flash')
-modelPro = genai.GenerativeModel('gemini-1.5-pro')
-q = Queue(maxsize = 15)
+model={}
+model["flash"] = genai.GenerativeModel('gemini-1.5-flash')
+model["pro"] = genai.GenerativeModel('gemini-1.5-pro')
 
-def runModel(model, prompt):
-    if model == "flash":
-        model = modelFlash
-    else:
-        model = modelPro
-    while q.full() and q.queue[0] > time.time() - 60:
+que = {}
+que["flash"] = Queue(maxsize = 15)
+que["pro"] = Queue(maxsize = 15)
+
+def runModel(modelName, prompt):
+    while que[modelName].full() and que[modelName].queue[0] > time.time() - 60:
         time.sleep(1)
-    if q.full():
-        q.get()
-    response = model.generate_content(
+    if que[modelName].full():
+        que[modelName].get()
+    response = model[modelName].generate_content(
         prompt,
         safety_settings={
             HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
             HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
         }
     )
-    q.put(time.time())
+    que[modelName].put(time.time())
     print(f"prompt: {prompt}\nresponse: {response.text}")
     return response.text
 

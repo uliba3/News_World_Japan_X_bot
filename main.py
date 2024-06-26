@@ -28,7 +28,7 @@ def create_neutral_tweet(article):
     article["final_header"] = runModel("flash", article["translated_summarized_content"] + promptsDict["finalizeHeader"])
     article["final_header"] = article["final_header"].replace("\n", "")
     article["final_header"] = '【' + article["final_header"] + '】'
-    neutral_tweet(f"{article['final_header']}{article['final_title']}{article['url']}\n{article['final_content']}")
+    neutral_tweet(f"{article['final_header']}{article['final_title']}{article['url']}\n\n{article['final_content']}")
 
 if __name__ == "__main__":
     today_utc = datetime.datetime.now(datetime.timezone.utc).date()
@@ -44,7 +44,7 @@ if __name__ == "__main__":
             if "True" not in runModel("flash", article["content"] + promptsDict["isValidArticle"]):
                 continue
 
-            article["rewritten_text"] = runModel("flash", article["content"] + promptsDict["rewrite"])
+            article["rewritten_text"] = runModel("flash", article["title"] + article["content"] + promptsDict["rewrite"])
             article["summarized_text"] = runModel("flash", article["rewritten_text"] + promptsDict["summarize"])
             article["translated_summarized_content"] = runModel("flash", article["summarized_text"] + promptsDict["translate"])
 
