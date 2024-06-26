@@ -7,16 +7,16 @@ import os
 import urllib.request
 import datetime
 from dotenv import load_dotenv
+import time
 
 load_dotenv()
 NEWS_API_ORG_API_KEY = os.getenv("NEWS_API_ORG_API_KEY")
+base_url = "https://gnews.io/api/v4/"
+categories = ["general", "world", "nation", "business"]
 
-all_articles_url = f"https://gnews.io/api/v4/search?q=japan&lang=en&apikey={NEWS_API_ORG_API_KEY}"
-headline_articles_url = f"https://gnews.io/api/v4/top-headlines?q=japan&lang=en&apikey={NEWS_API_ORG_API_KEY}"
-
-def add_all_articles():
+def add_all_articles(url):
     articles = []
-    with urllib.request.urlopen(all_articles_url) as response:
+    with urllib.request.urlopen(url) as response:
         data = json.loads(response.read().decode("utf-8"))
         all_articles = data["articles"]
     for article in all_articles:
@@ -28,9 +28,9 @@ def add_all_articles():
         })
     return articles
 
-def add_headline_articles():
+def add_headline_articles(url):
     articles = []
-    with urllib.request.urlopen(headline_articles_url) as response:
+    with urllib.request.urlopen(url) as response:
         data = json.loads(response.read().decode("utf-8"))
         all_articles = data["articles"]
     for article in all_articles:
@@ -52,8 +52,22 @@ def remove_duplicate_articles(articles):
     print(articles)
     return articles
 
-def add_articles():
-    return remove_duplicate_articles(add_all_articles() + add_headline_articles())
+def add_english_articles():
+    all_articles_url = f"{base_url}search?q=japan&lang=en&apikey={NEWS_API_ORG_API_KEY}"
+    headline_articles_url = f"{base_url}top-headlines?q=japan&lang=en&apikey={NEWS_API_ORG_API_KEY}"
+    return remove_duplicate_articles(add_all_articles(all_articles_url) + add_headline_articles(headline_articles_url))
 
+def add_japanese_articles():
+    articles = []
+    query = urllib.parse.quote("日本")
+    all_articles_url = f"{base_url}search?q={query}&lang=ja&apikey={NEWS_API_ORG_API_KEY}"
+    articles += add_all_articles(all_articles_url)
+    for category in categories:
+        print(category)
+        time.sleep(1)
+        category_url = f"{base_url}top-headlines?topic={category}&lang=ja&apikey={NEWS_API_ORG_API_KEY}"
+        articles += add_headline_articles(category_url)
+    return remove_duplicate_articles( articles )
+                                                                            
 if __name__ == '__main__':
-    articles = add_articles()
+    add_japanese_articles()

@@ -1,6 +1,6 @@
 from gemini import runModel
 from parseNews import fetch_news_content
-from gNews import add_articles
+from gNews import add_english_articles
 import datetime, time
 from tweet import neutral_tweet
 
@@ -13,7 +13,8 @@ promptsDict = {
     "translate" : "\n日本語に翻訳してください。",
     "finalizeContent" : "\nーツイート文章に直して\nー日本を中心にして\nー絵文字は使わないで\nー80文字ぐらいにして",
     "finalizeTitle" : "\n文章のタイトルを15文字ぐらいで書いて",
-    "finalizeHeader" : "\n5文字以内の状態を書いて"
+    "finalizeHeader" : "\5文字以内の状態を一つの単語で書いて",
+    "sadTweet" : "\n悲観的な男性の感想を日本視点で書いて"
 }
 
 articles = [{
@@ -32,7 +33,7 @@ def create_neutral_tweet(article):
 
 if __name__ == "__main__":
     today_utc = datetime.datetime.now(datetime.timezone.utc).date()
-    articles = add_articles()
+    articles = add_english_articles()
     for article in articles:
         if article['date'] != today_utc:
             continue
