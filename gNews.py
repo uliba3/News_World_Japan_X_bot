@@ -63,7 +63,6 @@ def add_japanese_articles():
     all_articles_url = f"{base_url}search?q={query}&lang=ja&apikey={NEWS_API_ORG_API_KEY}"
     articles += add_all_articles(all_articles_url)
     for category in categories:
-        print(category)
         time.sleep(1)
         category_url = f"{base_url}top-headlines?topic={category}&lang=ja&apikey={NEWS_API_ORG_API_KEY}"
         articles += add_headline_articles(category_url)

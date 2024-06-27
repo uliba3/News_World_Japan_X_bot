@@ -21,6 +21,19 @@ neutral_client = tweepy.Client(
 def neutral_tweet(text):
     tweet(neutral_client, text)
 
+negative_consumer_key = os.getenv("NEGATIVE_CONSUMER_KEY")
+negative_consumer_secret = os.getenv("NEGATIVE_CONSUMER_SECRET")
+negative_access_token = os.getenv("NEGATIVE_ACCESS_TOKEN")
+negative_access_token_secret = os.getenv("NEGATIVE_ACCESS_TOKEN_SECRET")
+
+negative_client = tweepy.Client(
+    consumer_key=negative_consumer_key, consumer_secret=negative_consumer_secret,
+    access_token=negative_access_token, access_token_secret=negative_access_token_secret
+)
+
+def negative_tweet(text):
+    tweet(negative_client, text)
+
 def tweet(client, text):
     print(f"text: {text}")
     response = client.create_tweet(
