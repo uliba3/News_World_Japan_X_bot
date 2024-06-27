@@ -14,7 +14,7 @@ promptsDict = {
     "finalizeContent" : "\nーツイート文章に直して\nー日本を中心にして\nー絵文字は使わないで\nー80文字ぐらいにして",
     "finalizeTitle" : "\n文章のタイトルを10文字ぐらいで書いて",
     "finalizeHeader" : "\5文字以内の状態を一つの単語で書いて",
-    "sadTweet" : "\n悲観的な男性の感想を日本視点で書いて"
+    "sadTweet" : "\悲観的な男性の感想を日本視点で100文字ぐらいで書いて"
 }
 
 articles = [{
@@ -28,6 +28,7 @@ def create_neutral_tweet(article):
     article["final_title"] = runModel("pro", article["translated_summarized_content"] + promptsDict["finalizeTitle"])
     article["final_header"] = runModel("flash", article["translated_summarized_content"] + promptsDict["finalizeHeader"])
     article["final_header"] = article["final_header"].replace("\n", "")
+    article["final_header"] = article["final_header"].replace(" ", "")
     article["final_header"] = '【' + article["final_header"] + '】'
     neutral_tweet(f"{article['final_header']}{article['final_title']}{article['url']}\n\n{article['final_content']}")
 
