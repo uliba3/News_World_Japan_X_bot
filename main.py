@@ -7,7 +7,7 @@ from tweet import neutral_tweet, negative_tweet
 promptsDict = {
     "extract" : "\nExtract only the article from the above text.",
     "isValidArticle" : "\nIs above text valid article?\nIf so reply True. If not reply False.",
-    "isRelatedToJapan" : "\nIs the above text strongly related to Japan from Japan's view?\nIf so reply True. If not reply False.",
+    "isRelatedToJapan" : "\nIs the above text related to Japan from Japan's view?\nIf so reply True. If not reply False.",
     "rewrite" : "\nRewrite the above text with Japan as topic.",
     "summarize" : "\nSummarize the above text in 70 words.",
     "translate" : "\n日本語に翻訳してください。",
@@ -16,7 +16,8 @@ promptsDict = {
     "finalizeHeader" : "\5文字以内の状態を一つの単語で書いて",
     "isValidArticleJapanese" : "\n上の文章は記事として適切ですか?もしそうならTrue、そうでないならFalseを返してください。",
     "extractJapanese" : "\n上の文章から記事を抜き出して",
-    "sadTweet" : "\n上の文章について日本への批判を100文字ぐらいで男性口調で書いて。"
+    "sadTweet" : "\n上の文章について日本への批判を100文字ぐらいで男性口調で書いて。",
+    "shorterJapanse" : "\n上の文章をトーンは同じで少し短くして",
 }
 
 articles = [{
@@ -34,6 +35,11 @@ def create_neutral_tweet(article):
     article["final_header"] = article["final_header"].replace("\n", "")
     article["final_header"] = article["final_header"].replace(" ", "")
     article["final_header"] = '【' + article["final_header"] + '】'
+    strLength = len(f"{article['final_header']}{article['final_title']}\n\n{article['final_content']}")
+    while strLength > 117:
+        article["final_content"] = runModel("pro", article["final_content"] + promptsDict["shorterJapanse"])
+        if strLength == len(f"{article['final_header']}{article['final_title']}\n\n{article['final_content']}"):
+            break
     neutral_tweet(f"{article['final_header']}{article['final_title']}{article['url']}\n\n{article['final_content']}")
 
 def neutral_main():
@@ -66,7 +72,15 @@ def negative_main():
             article["content"] = runModel("flash", news_content + promptsDict["extractJapanese"])
             if "True" not in runModel("flash", article["content"] + promptsDict["isValidArticleJapanese"]):
                 continue
+            if "True" not in runModel("flash", article["content"] + promptsDict["isRelatedToJapan"]):
+                continue
             article["final_content"] = runModel("flash", article["title"] + article["content"] + promptsDict["sadTweet"])
+            strLength = len(article["final_content"])
+            while strLength > 117:
+                article["final_content"] = runModel("flash", article["final_content"] + promptsDict["shorterJapanse"])
+                if strLength == len(article["final_content"]):
+                    break
+                strLength = len(article["final_content"])
             negative_tweet(f"{article['final_content']}\n{article['url']}")
         except Exception as e:
             print(e)
