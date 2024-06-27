@@ -40,9 +40,7 @@ if __name__ == "__main__":
             continue
         try:
             news_content = fetch_news_content(article["url"])
-            print("1")
             article["content"] = runModel("flash", news_content + promptsDict["extract"])
-            print("2")
             if "True" not in runModel("flash", article["content"] + promptsDict["isValidArticle"]):
                 continue
 
