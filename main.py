@@ -12,7 +12,7 @@ promptsDict = {
     "summarize" : "\nSummarize the above text in 70 words.",
     "translate" : "\n日本語に翻訳してください。",
     "finalizeContent" : "\nーツイート文章に直して\nー日本を中心にして\nー絵文字は使わないで\nー80文字ぐらいにして",
-    "finalizeTitle" : "\n文章のタイトルを15文字ぐらいで書いて",
+    "finalizeTitle" : "\n文章のタイトルを10文字ぐらいで書いて",
     "finalizeHeader" : "\5文字以内の状態を一つの単語で書いて",
     "sadTweet" : "\n悲観的な男性の感想を日本視点で書いて"
 }
