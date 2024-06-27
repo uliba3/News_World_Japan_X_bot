@@ -73,5 +73,5 @@ def negative_main():
             continue
 
 if __name__ == "__main__":
-    #neutral_main()
+    neutral_main()
     negative_main()
