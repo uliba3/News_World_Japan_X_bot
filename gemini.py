@@ -27,7 +27,7 @@ def runModel(modelName, prompt):
         time.sleep(1)
     if que[modelName].full():
         que[modelName].get()
-    time.sleep(1)
+    time.sleep(3)
     response = model[modelName].generate_content(
         prompt,
         safety_settings={

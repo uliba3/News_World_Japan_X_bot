@@ -11,7 +11,7 @@ promptsDict = {
     "translate" : "\n日本語に翻訳してください。",
     "finalizeContent" : "\nーツイート文章に直して\nー日本を中心にして\nー絵文字は使わないで\nー80文字ぐらいにして",
     "finalizeTitle" : "\n文章のタイトルを10文字ぐらいで書いて",
-    "finalizeHeader" : "\n5文字以内の状態を一つの単語で書いて",
+    "finalizeHeader" : "\n上の記事を五文字以内の一つの単語で表して",
     "isValidArticleJapanese" : "\n上の文章は記事として適切ですか?もしそうならTrue、そうでないならFalseを返してください。",
     "extractJapanese" : "\n上の文章から記事を抜き出して",
     "sadTweet" : "\n上の文章について日本への批判を100文字ぐらいで男性口調で書いて。",
@@ -29,7 +29,7 @@ today_utc = datetime.datetime.now(datetime.timezone.utc).date()
 def create_neutral_tweet(article):
     article["final_content"] = runModel("pro", article["translated_content"] + promptsDict["finalizeContent"])
     article["final_title"] = runModel("pro", article["final_content"] + promptsDict["finalizeTitle"])
-    article["final_header"] = runModel("flash", article["translated_content"] + promptsDict["finalizeHeader"])
+    article["final_header"] = runModel("flash", article["final_content"] + promptsDict["finalizeHeader"])
     article["final_header"] = article["final_header"].replace("\n", "")
     article["final_header"] = article["final_header"].replace(" ", "")
     article["final_header"] = '【' + article["final_header"] + '】'
