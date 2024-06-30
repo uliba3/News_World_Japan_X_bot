@@ -7,7 +7,7 @@ from buzzTwitter import fetch_buzz_tweet
 
 promptsDict = {
     "extract" : "\nExtract only the article from the above text.",
-    "isValidArticle" : "\nIs above text valid article?\nIf so reply True. If not reply False.",
+    "isValidArticle" : "\nIs above text, an article?\nIf so reply True. If not reply False.",
     "isRelatedToJapan" : "\nIs the above text related to Japan from Japan's view?\nIf so reply True. If not reply False.",
     "translate" : "\n日本語に翻訳してください。",
     "finalizeContent" : "\nーツイート文章に直して\nー日本を中心にして\nー絵文字は使わないで\nー80文字ぐらいにして",
@@ -105,6 +105,6 @@ def buzzTwitter_main():
             continue
 
 if __name__ == "__main__":
-    buzzTwitter_main()
-    neutral_main()
+    #buzzTwitter_main()
+    #neutral_main()
     negative_main()
