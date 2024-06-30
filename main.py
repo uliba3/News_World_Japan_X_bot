@@ -72,7 +72,7 @@ def negative_main():
                 continue
             if "True" not in runModel("flash", article["content"] + promptsDict["isRelatedToJapan"]):
                 continue
-            article["final_content"] = runModel("pro", article["title"] + article["content"] + promptsDict["criticize"])
+            article["final_content"] = runModel("pro", article["title"] + article["content"] + promptsDict["critisize"])
             strLength = len(article["final_content"])
             while len(article["final_content"]) > 117:
                 article["final_content"] = runModel("pro", article["final_content"] + promptsDict["shorterJapanse"])
