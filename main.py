@@ -3,6 +3,7 @@ from parseNews import fetch_news_content
 from gNews import add_english_articles, add_japanese_articles
 import datetime, time
 from tweet import neutral_tweet, negative_tweet
+from buzzTwitter import fetch_buzz_tweet
 
 promptsDict = {
     "extract" : "\nExtract only the article from the above text.",
@@ -12,9 +13,9 @@ promptsDict = {
     "finalizeContent" : "\nーツイート文章に直して\nー日本を中心にして\nー絵文字は使わないで\nー80文字ぐらいにして",
     "finalizeTitle" : "\n文章のタイトルを10文字ぐらいで書いて",
     "finalizeHeader" : "\n上の記事を五文字以内の一つの単語で表して",
-    "isValidArticleJapanese" : "\n上の文章は記事として適切ですか?もしそうならTrue、そうでないならFalseを返してください。",
+    "isValidArticleJapanese" : "\n上の文章は記事ですか?もしそうならTrue、そうでないならFalseを返してください。",
     "extractJapanese" : "\n上の文章から記事を抜き出して",
-    "sadTweet" : "\n上の文章について日本への批判を100文字ぐらいで男性口調で書いて。",
+    "critisize" : "\n上のツイートを100文字ぐらいで男性口調で徹底的に批判して",
     "shorterJapanse" : "\n上の文章をトーンは同じで少し短くして",
 }
 
@@ -25,6 +26,7 @@ articles = [{
 }]
 
 today_utc = datetime.datetime.now(datetime.timezone.utc).date()
+yesterday_utc = today_utc - datetime.timedelta(days=1)
 
 def create_neutral_tweet(article):
     article["final_content"] = runModel("pro", article["translated_content"] + promptsDict["finalizeContent"])
@@ -70,10 +72,10 @@ def negative_main():
                 continue
             if "True" not in runModel("flash", article["content"] + promptsDict["isRelatedToJapan"]):
                 continue
-            article["final_content"] = runModel("flash", article["title"] + article["content"] + promptsDict["sadTweet"])
+            article["final_content"] = runModel("pro", article["title"] + article["content"] + promptsDict["criticize"])
             strLength = len(article["final_content"])
-            while strLength > 117:
-                article["final_content"] = runModel("flash", article["final_content"] + promptsDict["shorterJapanse"])
+            while len(article["final_content"]) > 117:
+                article["final_content"] = runModel("pro", article["final_content"] + promptsDict["shorterJapanse"])
                 if strLength == len(article["final_content"]):
                     break
                 strLength = len(article["final_content"])
@@ -82,6 +84,27 @@ def negative_main():
             print(e)
             continue
 
+def buzzTwitter_main():
+    buzz_tweets = fetch_buzz_tweet()
+    for tweet in buzz_tweets:
+        print(tweet)
+        if tweet['twitter_date'] != yesterday_utc:
+            print(today_utc)
+            continue
+        try:
+            content = runModel("pro", tweet["twitter_text"] + promptsDict["critisize"])
+            strLength = len(content)
+            while len(content) > 117:
+                content = runModel("pro", content + promptsDict["shorterJapanse"])
+                if strLength == len(content):
+                    break
+                strLength = len(content)
+            negative_tweet(f"{content}\n{tweet['tweet_url']}")
+        except Exception as e:
+            print(e)
+            continue
+
 if __name__ == "__main__":
+    buzzTwitter_main()
     neutral_main()
     negative_main()
