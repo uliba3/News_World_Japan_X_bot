@@ -105,6 +105,6 @@ def buzzTwitter_main():
             continue
 
 if __name__ == "__main__":
-    #buzzTwitter_main()
-    #neutral_main()
+    buzzTwitter_main()
+    neutral_main()
     negative_main()
