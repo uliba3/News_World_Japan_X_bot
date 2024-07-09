@@ -15,8 +15,9 @@ promptsDict = {
     "finalizeHeader" : "\n上の記事を五文字以内の一つの単語で表して",
     "isValidArticleJapanese" : "\n上の文章は記事ですか?もしそうならTrue、そうでないならFalseを返してください。",
     "extractJapanese" : "\n上の文章から記事を抜き出して",
-    "critisize" : "\n上のツイートを100文字ぐらいで男性口調で徹底的に批判して",
+    "criticizeTweet" : "\n上のツイートを100文字ぐらいで男性口調で徹底的に批判して",
     "shorterJapanse" : "\n上の文章をトーンは同じで少し短くして",
+    "criticizeTrend" : "今トレンドの#Believe_in_Youについて100文字ぐらいで男性口調で徹底的に批判して\n#Believe_in_You と書いて"
 }
 
 articles = [{
@@ -72,7 +73,7 @@ def negative_main():
                 continue
             if "True" not in runModel("flash", article["content"] + promptsDict["isRelatedToJapan"]):
                 continue
-            article["final_content"] = runModel("pro", article["title"] + article["content"] + promptsDict["critisize"])
+            article["final_content"] = runModel("pro", article["title"] + article["content"] + promptsDict["criticizeTweet"])
             strLength = len(article["final_content"])
             while len(article["final_content"]) > 117:
                 article["final_content"] = runModel("pro", article["final_content"] + promptsDict["shorterJapanse"])
@@ -92,7 +93,7 @@ def buzzTwitter_main():
             print(today_utc)
             continue
         try:
-            content = runModel("pro", tweet["twitter_text"] + promptsDict["critisize"])
+            content = runModel("pro", tweet["twitter_text"] + promptsDict["criticizeTweet"])
             strLength = len(content)
             while len(content) > 117:
                 content = runModel("pro", content + promptsDict["shorterJapanse"])
