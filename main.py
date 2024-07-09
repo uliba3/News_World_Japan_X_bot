@@ -4,6 +4,7 @@ from gNews import add_english_articles, add_japanese_articles
 import datetime, time
 from tweet import neutral_tweet, negative_tweet
 from buzzTwitter import fetch_buzz_tweet
+from trendTwitter import fetch_trends
 
 promptsDict = {
     "extract" : "\nExtract only the article from the above text.",
@@ -105,7 +106,18 @@ def buzzTwitter_main():
             print(e)
             continue
 
+def buzzTrend_main():
+    trends = fetch_trends()
+    for trend in trends:
+        try:
+            content = runModel("flash", f"今トレンドの{trend}について100文字ぐらいで男性口調で徹底的に批判して\n{trend} と書いて")
+            negative_tweet(content)
+        except Exception as e:
+            print(e)
+            continue
+
 if __name__ == "__main__":
+    buzzTrend_main()
     buzzTwitter_main()
     neutral_main()
     negative_main()
