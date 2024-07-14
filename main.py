@@ -1,7 +1,7 @@
 from gemini import runModel
 from parseNews import fetch_news_content
 from gNews import add_english_articles, add_japanese_articles
-import datetime, time
+import datetime
 from tweet import neutral_tweet, negative_tweet
 from buzzTwitter import fetch_buzz_tweet
 from trendTwitter import fetch_trends
@@ -28,7 +28,6 @@ articles = [{
 }]
 
 today_utc = datetime.datetime.now(datetime.timezone.utc).date()
-yesterday_utc = today_utc - datetime.timedelta(days=1)
 
 def create_neutral_tweet(article):
     article["final_content"] = runModel("pro", article["translated_content"] + promptsDict["finalizeContent"])
@@ -90,9 +89,6 @@ def buzzTwitter_main():
     buzz_tweets = fetch_buzz_tweet()
     for tweet in buzz_tweets:
         print(tweet)
-        if tweet['twitter_date'] != yesterday_utc:
-            print(today_utc)
-            continue
         try:
             content = runModel("pro", tweet["twitter_text"] + promptsDict["criticizeTweet"])
             strLength = len(content)
@@ -117,7 +113,7 @@ def buzzTrend_main():
             continue
 
 if __name__ == "__main__":
-    buzzTrend_main()
+    #buzzTrend_main()
     buzzTwitter_main()
     neutral_main()
-    negative_main()
+    #negative_main()
