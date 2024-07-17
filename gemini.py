@@ -30,9 +30,11 @@ def runModel(modelName, prompt):
     time.sleep(3)
     response = model[modelName].generate_content(
         prompt,
-        safety_settings={
+        safety_settings={            
             HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
             HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
+            HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT : HarmBlockThreshold.BLOCK_NONE,
+            HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT : HarmBlockThreshold.BLOCK_NONE
         }
     )
     que[modelName].put(time.time())
