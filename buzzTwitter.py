@@ -5,7 +5,7 @@ import datetime
 import pytz
 from urllib.parse import urlparse, parse_qs
 
-urls = ["https://buzzweet.com/text-tweet/", "https://buzzweet.com/photo-tweet/", "https://buzzweet.com/video-tweet/", "https://buzzweet.com/cosme-tweet/", "https://buzzweet.com/en-tweet/", "https://buzzweet.com/en-tweet/2/"]
+urls = ["https://buzzweet.com/text-tweet/", "https://buzzweet.com/photo-tweet/", "https://buzzweet.com/video-tweet/", "https://buzzweet.com/cosme-tweet/"]
 
 yesterday_urls = ["https://buzzweet.com/text-tweet/", "https://buzzweet.com/photo-tweet/", "https://buzzweet.com/video-tweet/", "https://buzzweet.com/cosme-tweet/"]
 today_urls = ["https://buzzweet.com/en-tweet/", "https://buzzweet.com/en-tweet/2/"]
