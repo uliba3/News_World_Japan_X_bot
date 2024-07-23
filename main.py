@@ -5,6 +5,7 @@ import datetime
 from tweet import neutral_tweet, negative_tweet
 from buzzTwitter import fetch_buzz_tweet
 from trendTwitter import fetch_trends
+from footballNews import get_football_news
 
 promptsDict = {
     "extract" : "\nExtract only the article from the above text.",
@@ -17,7 +18,7 @@ promptsDict = {
     "isValidArticleJapanese" : "\n上の文章は記事ですか?もしそうならTrue、そうでないならFalseを返してください。",
     "extractJapanese" : "\n上の文章から記事を抜き出して",
     "criticizeTweet" : "\n上のツイートを100文字ぐらいで男性口調で徹底的に批判して",
-    "criticizeTrend" : "今トレンドの#Believe_in_Youについて100文字ぐらいで男性口調で徹底的に批判して\n#Believe_in_You と書いて"
+    "finalizeFootballTweet": "\nーツイート文章に直して\nー100文字ぐらいにして"
 }
 
 articles = [{
@@ -53,6 +54,24 @@ def neutral_main():
             article["translated_content"] = runModel("flash", article["content"] + promptsDict["translate"])
 
             create_neutral_tweet(article)
+        except Exception as e:
+            print(e)
+            continue
+
+def football_main():
+    football_news = get_football_news()
+    for article in football_news:
+        try:
+            news_content = fetch_news_content(article["url"])
+            article["content"] = runModel("flash", news_content + promptsDict["extract"])
+            if "True" not in runModel("flash", article["content"] + promptsDict["isValidArticle"]):
+                continue
+
+            article["translated_content"] = runModel("flash", article["content"] + promptsDict["translate"])
+
+            article["final_content"] = runModel("pro", article["translated_content"] + promptsDict["finalizeFootballTweet"])
+            if len(f"{article['final_content']}") <= 117:
+                neutral_tweet(f"{article['final_content']}\n{article['url']}")
         except Exception as e:
             print(e)
             continue
@@ -103,5 +122,6 @@ def buzzTrend_main():
 if __name__ == "__main__":
     #buzzTrend_main()
     buzzTwitter_main()
-    neutral_main()
+    #neutral_main()
     #negative_main()
+    football_main()
