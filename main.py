@@ -17,7 +17,6 @@ promptsDict = {
     "isValidArticleJapanese" : "\n上の文章は記事ですか?もしそうならTrue、そうでないならFalseを返してください。",
     "extractJapanese" : "\n上の文章から記事を抜き出して",
     "criticizeTweet" : "\n上のツイートを100文字ぐらいで男性口調で徹底的に批判して",
-    "shorterJapanse" : "\n上の文章をトーンは同じで少し短くして",
     "criticizeTrend" : "今トレンドの#Believe_in_Youについて100文字ぐらいで男性口調で徹底的に批判して\n#Believe_in_You と書いて"
 }
 
@@ -37,11 +36,8 @@ def create_neutral_tweet(article):
     article["final_header"] = article["final_header"].replace(" ", "")
     article["final_header"] = '【' + article["final_header"] + '】'
     strLength = len(f"{article['final_header']}{article['final_title']}\n\n{article['final_content']}")
-    while strLength > 117:
-        article["final_content"] = runModel("pro", article["final_content"] + promptsDict["shorterJapanse"])
-        if strLength == len(f"{article['final_header']}{article['final_title']}\n\n{article['final_content']}"):
-            break
-    neutral_tweet(f"{article['final_header']}{article['final_title']}{article['url']}\n\n{article['final_content']}")
+    if strLength <= 117:
+        neutral_tweet(f"{article['final_header']}{article['final_title']}{article['url']}\n\n{article['final_content']}")
 
 def neutral_main():
     articles = add_english_articles()
@@ -75,12 +71,8 @@ def negative_main():
                 continue
             article["final_content"] = runModel("pro", article["title"] + article["content"] + promptsDict["criticizeTweet"])
             strLength = len(article["final_content"])
-            while len(article["final_content"]) > 117:
-                article["final_content"] = runModel("pro", article["final_content"] + promptsDict["shorterJapanse"])
-                if strLength == len(article["final_content"]):
-                    break
-                strLength = len(article["final_content"])
-            negative_tweet(f"{article['final_content']}\n{article['url']}")
+            if len(article["final_content"]) <= 117:
+                negative_tweet(f"{article['final_content']}\n{article['url']}")
         except Exception as e:
             print(e)
             continue
@@ -92,12 +84,8 @@ def buzzTwitter_main():
         try:
             content = runModel("pro", tweet["twitter_text"] + promptsDict["criticizeTweet"])
             strLength = len(content)
-            while len(content) > 117:
-                content = runModel("pro", content + promptsDict["shorterJapanse"])
-                if strLength == len(content):
-                    break
-                strLength = len(content)
-            negative_tweet(f"{content}\n{tweet['tweet_url']}")
+            if len(content) <= 117:
+                negative_tweet(f"{content}\n{tweet['tweet_url']}")
         except Exception as e:
             print(e)
             continue
