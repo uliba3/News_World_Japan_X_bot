@@ -19,7 +19,7 @@ neutral_client = tweepy.Client(
 )
 
 def neutral_tweet(text):
-    tweet(neutral_client, text)
+    tweet_text("neutral_client", text)
 
 negative_consumer_key = os.getenv("NEGATIVE_CONSUMER_KEY")
 negative_consumer_secret = os.getenv("NEGATIVE_CONSUMER_SECRET")
@@ -32,11 +32,33 @@ negative_client = tweepy.Client(
 )
 
 def negative_tweet(text):
-    tweet(negative_client, text)
+    tweet_text("negative_client", text)
 
-def tweet(client, text):
+analysis_consumer_key = os.getenv("ANALYSIS_CONSUMER_KEY")
+analysis_consumer_secret = os.getenv("ANALYSIS_CONSUMER_SECRET")
+analysis_access_token = os.getenv("ANALYSIS_ACCESS_TOKEN")
+analysis_access_token_secret = os.getenv("ANALYSIS_ACCESS_TOKEN_SECRET")
+
+analysis_client = tweepy.Client(
+    consumer_key=analysis_consumer_key, consumer_secret=analysis_consumer_secret,
+    access_token=analysis_access_token, access_token_secret=analysis_access_token_secret
+)
+
+def analysis_tweet(text):
+    tweet_text("analysis", text)
+
+client = {}
+
+client["neutral"] = neutral_client
+client["negative"] = negative_client
+client["analysis"] = analysis_client
+
+def tweet_text(client_name, text):
     print(f"text: {text}")
-    response = client.create_tweet(
+    response = client[client_name].create_tweet(
         text=text,
         user_auth=True
     )
+
+if __name__ == "__main__":
+    analysis_tweet("Hello, world!")

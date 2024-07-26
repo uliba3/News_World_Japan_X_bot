@@ -8,7 +8,6 @@ from urllib.parse import urlparse, parse_qs
 urls = ["https://buzzweet.com/text-tweet/", "https://buzzweet.com/photo-tweet/", "https://buzzweet.com/video-tweet/", "https://buzzweet.com/cosme-tweet/"]
 
 yesterday_urls = ["https://buzzweet.com/text-tweet/", "https://buzzweet.com/photo-tweet/", "https://buzzweet.com/video-tweet/", "https://buzzweet.com/cosme-tweet/"]
-today_urls = ["https://buzzweet.com/en-tweet/", "https://buzzweet.com/en-tweet/2/"]
 
 twitter_containers = [{
     "twitter_id": "twitter_id",
@@ -71,9 +70,6 @@ def fetch_buzz_tweet():
             if url in yesterday_urls and twitter_date != yesterday_utc:
                 continue
 
-            if url in today_urls and twitter_date != today_utc:
-                continue
-
             twitter_text = twitter_texts[length].text
             twitter_text = parse_twitter_text(twitter_text)
 
@@ -85,10 +81,15 @@ def fetch_buzz_tweet():
             twitter_containers.append({
                 "twitter_date" : twitter_date,
                 "twitter_text": twitter_text,
-                "tweet_url" : f"https://x.com/{twitter_id}/status/{tweet_id}"
+                "tweet_url" : f"https://x.com/{twitter_id}/status/{tweet_id}",
+                "tweet_type_url": url
             })
     
     return twitter_containers
 
+def fetch_buzz_tweet_text():
+    buzz_tweets = fetch_buzz_tweet()
+    return [tweet for tweet in buzz_tweets if tweet["tweet_type_url"] == "https://buzzweet.com/text-tweet/"]
+
 if __name__ == "__main__":
-    print(fetch_buzz_tweet())
+    print(fetch_buzz_tweet_text())

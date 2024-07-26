@@ -13,6 +13,9 @@ load_dotenv()
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 
 genai.configure(api_key=GOOGLE_API_KEY)
+generation_config = genai.GenerationConfig(
+  temperature=1
+)
 
 model={}
 model["flash"] = genai.GenerativeModel('gemini-1.5-flash')
@@ -30,6 +33,7 @@ def runModel(modelName, prompt):
     time.sleep(20)
     response = model[modelName].generate_content(
         prompt,
+        generation_config=generation_config,
         safety_settings={            
             HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
             HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,

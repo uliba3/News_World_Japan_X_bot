@@ -1,10 +1,8 @@
 from gemini import runModel
 from parseNews import fetch_news_content
-from gNews import add_english_articles, add_japanese_articles
 import datetime
-from tweet import neutral_tweet, negative_tweet
-from buzzTwitter import fetch_buzz_tweet
-from trendTwitter import fetch_trends
+from tweet import tweet_text
+from buzzTwitter import fetch_buzz_tweet, fetch_buzz_tweet_text
 from footballNews import get_football_news
 
 promptsDict = {
@@ -18,7 +16,9 @@ promptsDict = {
     "isValidArticleJapanese" : "\n上の文章は記事ですか?もしそうならTrue、そうでないならFalseを返してください。",
     "extractJapanese" : "\n上の文章から記事を抜き出して",
     "criticizeTweet" : "\n上のツイートを100文字ぐらいで男性口調で徹底的に批判して",
-    "finalizeFootballTweet": "\nーツイート文章に直して\nー100文字ぐらいにして"
+    "finalizeFootballTweet": "\nーツイート文章に直して\nー100文字ぐらいにして",
+    "analyzeTweet": "\n上のツイートが話題になった理由を100文字でツイッター専門家として冷静に分析して",
+    "adviseTweet": "\n上のツイートの改善できる部分を100文字で書いて",
 }
 
 articles = [{
@@ -28,35 +28,6 @@ articles = [{
 }]
 
 today_utc = datetime.datetime.now(datetime.timezone.utc).date()
-
-def create_neutral_tweet(article):
-    article["final_content"] = runModel("pro", article["translated_content"] + promptsDict["finalizeContent"])
-    article["final_title"] = runModel("pro", article["final_content"] + promptsDict["finalizeTitle"])
-    article["final_header"] = runModel("flash", article["final_content"] + promptsDict["finalizeHeader"])
-    article["final_header"] = article["final_header"].replace("\n", "")
-    article["final_header"] = article["final_header"].replace(" ", "")
-    article["final_header"] = '【' + article["final_header"] + '】'
-    strLength = len(f"{article['final_header']}{article['final_title']}\n\n{article['final_content']}")
-    if strLength <= 117:
-        neutral_tweet(f"{article['final_header']}{article['final_title']}{article['url']}\n\n{article['final_content']}")
-
-def neutral_main():
-    articles = add_english_articles()
-    for article in articles:
-        if article['date'] != today_utc:
-            continue
-        try:
-            news_content = fetch_news_content(article["url"])
-            article["content"] = runModel("flash", news_content + promptsDict["extract"])
-            if "True" not in runModel("flash", article["content"] + promptsDict["isValidArticle"]):
-                continue
-
-            article["translated_content"] = runModel("flash", article["content"] + promptsDict["translate"])
-
-            create_neutral_tweet(article)
-        except Exception as e:
-            print(e)
-            continue
 
 def football_main():
     football_news = get_football_news()
@@ -69,59 +40,41 @@ def football_main():
 
             article["translated_content"] = runModel("flash", article["content"] + promptsDict["translate"])
 
-            article["final_content"] = runModel("pro", article["translated_content"] + promptsDict["finalizeFootballTweet"])
+            article["final_content"] = runModel("flash", article["translated_content"] + promptsDict["finalizeFootballTweet"])
             if len(f"{article['final_content']}") <= 117:
-                neutral_tweet(f"{article['final_content']}\n{article['url']}")
+                tweet_text("neutral", f"{article['final_content']}\n{article['url']}")
         except Exception as e:
             print(e)
             continue
 
-def negative_main():
-    articles = add_japanese_articles()
-    for article in articles:
-        if article['date'] != today_utc:
-            continue
-        try:
-            news_content = fetch_news_content(article["url"])
-            article["content"] = runModel("flash", news_content + promptsDict["extractJapanese"])
-            if "True" not in runModel("flash", article["content"] + promptsDict["isValidArticleJapanese"]):
-                continue
-            if "True" not in runModel("flash", article["content"] + promptsDict["isRelatedToJapan"]):
-                continue
-            article["final_content"] = runModel("pro", article["title"] + article["content"] + promptsDict["criticizeTweet"])
-            strLength = len(article["final_content"])
-            if len(article["final_content"]) <= 117:
-                negative_tweet(f"{article['final_content']}\n{article['url']}")
-        except Exception as e:
-            print(e)
-            continue
-
-def buzzTwitter_main():
+def buzzTwitter_negative():
     buzz_tweets = fetch_buzz_tweet()
     for tweet in buzz_tweets:
         print(tweet)
         try:
-            content = runModel("pro", tweet["twitter_text"] + promptsDict["criticizeTweet"])
-            strLength = len(content)
+            content = runModel("flash", tweet["twitter_text"] + promptsDict["criticizeTweet"])
             if len(content) <= 117:
-                negative_tweet(f"{content}\n{tweet['tweet_url']}")
+                tweet_text("negative", f"{content}\n{tweet['tweet_url']}")
         except Exception as e:
             print(e)
             continue
 
-def buzzTrend_main():
-    trends = fetch_trends()
-    for trend in trends:
+def buzzTwitter_analysis():
+    buzz_tweets = fetch_buzz_tweet_text()
+    for tweet in buzz_tweets:
+        print(tweet)
         try:
-            content = runModel("flash", f"今トレンドの{trend}について100文字ぐらいで男性口調で徹底的に批判して\n{trend} と書いて")
-            negative_tweet(content)
+            content = runModel("flash", tweet["twitter_text"] + promptsDict["analyzeTweet"])
+            if len(content) <= 117:
+                tweet_text("analysis", f"{content}\n{tweet['tweet_url']}")
+            content = runModel("flash", tweet["twitter_text"] + promptsDict["adviseTweet"])
+            if len(content) <= 117:
+                tweet_text("analysis", f"{content}\n{tweet['tweet_url']}")
         except Exception as e:
             print(e)
             continue
 
 if __name__ == "__main__":
-    #buzzTrend_main()
-    buzzTwitter_main()
-    #neutral_main()
-    #negative_main()
+    buzzTwitter_negative()
     football_main()
+    buzzTwitter_analysis()
