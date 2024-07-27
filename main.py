@@ -17,8 +17,8 @@ promptsDict = {
     "extractJapanese" : "\n上の文章から記事を抜き出して",
     "criticizeTweet" : "\n上のツイートを100文字ぐらいで男性口調で徹底的に批判して",
     "finalizeFootballTweet": "\nーツイート文章に直して\nー100文字ぐらいにして",
-    "analyzeTweet": "\n上のツイートが話題になった理由を100文字でツイッター専門家として冷静に分析して",
-    "adviseTweet": "\n上のツイートの改善できる部分を100文字で書いて",
+    "analyzeTweet": "\n上のツイートが話題になった理由を分析して1文で上から目線で書いて",
+    "adviseTweet": "\nよりバズるための改善点を1文で上から目線で指摘して、ただし、元の文章と改善後の文章は書かないで",
 }
 
 articles = [{
