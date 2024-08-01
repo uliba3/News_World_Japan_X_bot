@@ -7,7 +7,7 @@ from urllib.parse import urlparse, parse_qs
 
 urls = ["https://buzzweet.com/text-tweet/", "https://buzzweet.com/photo-tweet/", "https://buzzweet.com/video-tweet/", "https://buzzweet.com/cosme-tweet/"]
 
-yesterday_urls = ["https://buzzweet.com/text-tweet/", "https://buzzweet.com/photo-tweet/", "https://buzzweet.com/video-tweet/", "https://buzzweet.com/cosme-tweet/"]
+english_urls = ["https://buzzweet.com/en-tweet/", "https://buzzweet.com/en-tweet/2/"]
 
 twitter_containers = [{
     "twitter_id": "twitter_id",
@@ -45,7 +45,7 @@ def parse_twitter_date(twitter_date_text):
 def parse_twitter_text(twitter_text):
     return twitter_text.replace("\n", "")
 
-def fetch_buzz_tweet():
+def fetch_tweet(urls, utc_date):
     # Fetch the content of the URL
     twitter_containers = []
 
@@ -67,7 +67,7 @@ def fetch_buzz_tweet():
             twitter_date_span = twitter_dates[length].find('span')
             twitter_date = twitter_date_span.text if twitter_date_span else ""
             twitter_date = parse_twitter_date(twitter_date)
-            if url in yesterday_urls and twitter_date != yesterday_utc:
+            if url in urls and twitter_date != utc_date:
                 continue
 
             twitter_text = twitter_texts[length].text
@@ -84,12 +84,13 @@ def fetch_buzz_tweet():
                 "tweet_url" : f"https://x.com/{twitter_id}/status/{tweet_id}",
                 "tweet_type_url": url
             })
-    
     return twitter_containers
 
-def fetch_buzz_tweet_text():
-    buzz_tweets = fetch_buzz_tweet()
-    return [tweet for tweet in buzz_tweets if tweet["tweet_type_url"] == "https://buzzweet.com/text-tweet/"]
+def fetch_english_tweet():
+    return fetch_tweet(english_urls, today_utc)
 
-if __name__ == "__main__":
-    print(fetch_buzz_tweet_text())
+def fetch_japanese_tweet():
+    return fetch_tweet(urls, yesterday_utc)
+
+def fetch_japanese_text_tweet():
+    return fetch_tweet([urls[0]], yesterday_utc)

@@ -67,6 +67,9 @@ def add_japanese_articles():
         category_url = f"{base_url}top-headlines?topic={category}&lang=ja&apikey={NEWS_API_ORG_API_KEY}"
         articles += add_headline_articles(category_url)
     return remove_duplicate_articles( articles )
-                                                                            
+
+def add_articles():
+    return add_english_articles() + add_japanese_articles()
+
 if __name__ == '__main__':
     add_japanese_articles()
