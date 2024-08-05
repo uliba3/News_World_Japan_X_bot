@@ -96,6 +96,6 @@ def seduce_tweet():
             continue
 
 if __name__ == "__main__":
-    japaneseTwitter_negative()
+    #japaneseTwitter_negative()
     news_main()
     seduce_tweet()
