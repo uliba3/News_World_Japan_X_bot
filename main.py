@@ -1,39 +1,50 @@
-from gemini import isArticleValid, extractArticle, isRelatedToJapan, rewriteAritcle, finalizeArticle, finalizeTitle
+from gemini import runModel
 from parseNews import fetch_news_content
-from gNews import add_articles
-import datetime, time
-from tweet import write_news_tweet
+import datetime
+from tweet import tweet_text
+from buzzTwitter import fetch_japanese_tweet, fetch_english_tweet
+from gNews import add_english_articles, add_japanese_articles
+from parseNews import fetch_news_content
+
+promptsDict = {
+    "extract" : {
+        "en": "\nExtract only the article from the above text.",
+        "ja": "\n上の文章から記事を抜き出して"
+    },
+    "isValidArticle" : {
+        "en": "\nIs above text, an article?\nIf so reply True. If not reply False.",
+        "ja": "\n上の文章は記事ですか？\n記事ならTrueを返してください。違う場合はFalseを返してください。"
+    },
+    "translate" : "\n日本語に翻訳してください。",
+    "finalizeTweet": "\nーツイート文章に直して\nー100文字ぐらいにして"
+}
 
 articles = [{
     "title": "",
-    "final_title": "",
     "url": "",
-    "date": "",
-    "content": "",
-    "translated_summarized_content" : "",
-    "final_content": ""
+    "date": ""
 }]
 
-if __name__ == "__main__":
-    today = datetime.datetime.now().date()
-    articles = []
-    articles = add_articles(articles)
+today_utc = datetime.datetime.now(datetime.timezone.utc).date()
+
+def news_main():
+    articles = add_english_articles() + add_japanese_articles()
     for article in articles:
-        if article['date'] != today:
-            continue
         try:
+            if article["date"] != today_utc:
+                continue
             news_content = fetch_news_content(article["url"])
-            article["content"] = extractArticle(article["title"]+news_content)
-            if "True" not in isArticleValid(article["content"]):
+            article["content"] = runModel("flash", news_content + promptsDict["extract"][article["language"]])
+            if "True" not in runModel("flash", article["content"] + promptsDict["isValidArticle"][article["language"]]):
                 continue
-            if "True" not in isRelatedToJapan(article["content"]):
-                continue
-            article["translated_summarized_content"] = rewriteAritcle(article["content"])
-            article["final_content"] = finalizeArticle(article["translated_summarized_content"])
-            article["final_title"] = finalizeTitle(article["translated_summarized_content"])
-            write_news_tweet(article["final_title"], article["url"], article["final_content"])
-            time.sleep(60)
+            if article["language"] == "en":
+                article["translated_content"] = runModel("flash", article["content"] + promptsDict["translate"])
+            article["final_content"] = runModel("flash", article["translated_content"] + promptsDict["finalizeTweet"])
+            if len(f"{article['final_content']}") <= 117:
+                tweet_text("neutral", f"{article['final_content']}\n{article['url']}")
         except Exception as e:
             print(e)
-            time.sleep(60)
             continue
+
+if __name__ == "__main__":
+    news_main()

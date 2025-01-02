@@ -1,0 +1,52 @@
+name: Pipeline
+
+on:
+  schedule:
+    - cron: '0 23 * * *' # Run every day at 11 PM UTC
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: uliba/news_twitter_bot:latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set Environment Variables
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          NEWS_API_ORG_API_KEY: ${{ secrets.NEWS_API_ORG_API_KEY }}
+          NEUTRAL_ACCESS_TOKEN: ${{ secrets.NEUTRAL_ACCESS_TOKEN }}
+          NEUTRAL_ACCESS_TOKEN_SECRET: ${{ secrets.NEUTRAL_ACCESS_TOKEN_SECRET }}
+          NEUTRAL_CONSUMER_KEY: ${{ secrets.NEUTRAL_CONSUMER_KEY }}
+          NEUTRAL_CONSUMER_SECRET: ${{ secrets.NEUTRAL_CONSUMER_SECRET }}
+          NEGATIVE_ACCESS_TOKEN: ${{ secrets.NEGATIVE_ACCESS_TOKEN }}
+          NEGATIVE_ACCESS_TOKEN_SECRET: ${{ secrets.NEGATIVE_ACCESS_TOKEN_SECRET }}
+          NEGATIVE_CONSUMER_KEY: ${{ secrets.NEGATIVE_CONSUMER_KEY }}
+          NEGATIVE_CONSUMER_SECRET: ${{ secrets.NEGATIVE_CONSUMER_SECRET }}
+          ANALYSIS_CONSUMER_KEY: ${{ secrets.ANALYSIS_CONSUMER_KEY }}
+          ANALYSIS_CONSUMER_SECRET: ${{ secrets.ANALYSIS_CONSUMER_SECRET }}
+          ANALYSIS_ACCESS_TOKEN: ${{ secrets.ANALYSIS_ACCESS_TOKEN }}
+          ANALYSIS_ACCESS_TOKEN_SECRET: ${{ secrets.ANALYSIS_ACCESS_TOKEN_SECRET }}
+        run: |
+          echo "GOOGLE_API_KEY=$GOOGLE_API_KEY" > .env
+          echo "NEWS_API_ORG_API_KEY=$NEWS_API_ORG_API_KEY" >> .env
+          echo "NEUTRAL_ACCESS_TOKEN=$NEUTRAL_ACCESS_TOKEN" >> .env
+          echo "NEUTRAL_ACCESS_TOKEN_SECRET=$NEUTRAL_ACCESS_TOKEN_SECRET" >> .env
+          echo "NEUTRAL_CONSUMER_KEY=$NEUTRAL_CONSUMER_KEY" >> .env
+          echo "NEUTRAL_CONSUMER_SECRET=$NEUTRAL_CONSUMER_SECRET" >> .env
+          echo "NEGATIVE_ACCESS_TOKEN=$NEGATIVE_ACCESS_TOKEN" >> .env
+          echo "NEGATIVE_ACCESS_TOKEN_SECRET=$NEGATIVE_ACCESS_TOKEN_SECRET" >> .env
+          echo "NEGATIVE_CONSUMER_KEY=$NEGATIVE_CONSUMER_KEY" >> .env
+          echo "NEGATIVE_CONSUMER_SECRET=$NEGATIVE_CONSUMER_SECRET" >> .env
+          echo "ANALYSIS_CONSUMER_KEY=$ANALYSIS_CONSUMER_KEY" >> .env
+          echo "ANALYSIS_CONSUMER_SECRET=$ANALYSIS_CONSUMER_SECRET" >> .env
+          echo "ANALYSIS_ACCESS_TOKEN=$ANALYSIS_ACCESS_TOKEN" >> .env
+          echo "ANALYSIS_ACCESS_TOKEN_SECRET=$ANALYSIS_ACCESS_TOKEN_SECRET" >> .env
+          cat .env
+
+      - name: Run python script
+        run: |
+          python3 main.py
