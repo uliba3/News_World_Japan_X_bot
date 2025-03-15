@@ -18,8 +18,8 @@ generation_config = genai.GenerationConfig(
 )
 
 model={}
-model["flash"] = genai.GenerativeModel('gemini-1.5-flash')
-model["pro"] = genai.GenerativeModel('gemini-1.5-pro')
+model["flash"] = genai.GenerativeModel('gemini-2.0-flash-lite')
+model["pro"] = genai.GenerativeModel('gemini-2.0-pro')
 
 que = {}
 que["flash"] = Queue(maxsize = 15)

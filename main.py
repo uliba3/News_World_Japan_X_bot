@@ -28,7 +28,7 @@ articles = [{
 today_utc = datetime.datetime.now(datetime.timezone.utc).date()
 
 def news_main():
-    articles = add_english_articles() + add_japanese_articles()
+    articles = add_english_articles()
     for article in articles:
         try:
             if article["date"] != today_utc:
