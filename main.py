@@ -2,7 +2,6 @@ from gemini import runModel
 from parseNews import fetch_news_content
 import datetime
 from tweet import tweet_text
-from buzzTwitter import fetch_japanese_tweet, fetch_english_tweet
 from gNews import add_english_articles, add_japanese_articles
 from parseNews import fetch_news_content
 
@@ -16,7 +15,7 @@ promptsDict = {
         "ja": "\n上の文章は記事ですか？\n記事ならTrueを返してください。違う場合はFalseを返してください。"
     },
     "translate" : "\n日本語に翻訳してください。",
-    "finalizeTweet": "\nーツイート文章に直して\nー100文字ぐらいにして"
+    "finalizeTweet": "\nー短いニュースタイトルにして"
 }
 
 articles = [{
@@ -40,6 +39,8 @@ def news_main():
             if article["language"] == "en":
                 article["translated_content"] = runModel("flash", article["content"] + promptsDict["translate"])
             article["final_content"] = runModel("flash", article["translated_content"] + promptsDict["finalizeTweet"])
+            article["final_content"] = article["final_content"].replace("*", "")
+            article["final_content"] = article["final_content"].replace("#", "")
             if len(f"{article['final_content']}") <= 117:
                 tweet_text("neutral", f"{article['final_content']}\n{article['url']}")
         except Exception as e:
