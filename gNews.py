@@ -12,7 +12,7 @@ import time
 load_dotenv()
 NEWS_API_ORG_API_KEY = os.getenv("NEWS_API_ORG_API_KEY")
 base_url = "https://gnews.io/api/v4/"
-categories = ["general", "world", "nation", "business", "technology"]
+categories = ["general", "world", "business"]
 # ["general", "world", "nation", "business", "technology", "entertainment", "sports", "science", "health"]
 def add_all_articles(url, language):
     articles = []

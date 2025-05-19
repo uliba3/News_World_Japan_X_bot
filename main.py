@@ -33,6 +33,9 @@ def news_main():
             if article["date"] != today_utc:
                 continue
             news_content = fetch_news_content(article["url"])
+            if news_content.startswith("Failed to retrieve content"):
+                print(f"Failed to fetch content for {article['url']}")
+                continue
             article["content"] = runModel("flash", news_content + promptsDict["extract"][article["language"]])
             if "True" not in runModel("flash", article["content"] + promptsDict["isValidArticle"][article["language"]]):
                 continue
