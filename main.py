@@ -15,7 +15,7 @@ promptsDict = {
         "ja": "\n上の文章は記事ですか？\n記事ならTrueを返してください。違う場合はFalseを返してください。"
     },
     "translate" : "\n日本語に翻訳してください。",
-    "finalizeTweet": "\nー短いニュースタイトルにして"
+    "finalizeTweet": "\n一つの短いニュースタイトルにして"
 }
 
 articles = [{
@@ -28,7 +28,9 @@ today_utc = datetime.datetime.now(datetime.timezone.utc).date()
 
 def news_main():
     articles = add_english_articles()
+    count = 0
     for article in articles:
+        count += 1
         try:
             if article["date"] != today_utc:
                 continue
@@ -41,6 +43,8 @@ def news_main():
                 continue
             if article["language"] == "en":
                 article["translated_content"] = runModel("flash", article["content"] + promptsDict["translate"])
+            else:
+                continue
             article["final_content"] = runModel("flash", article["translated_content"] + promptsDict["finalizeTweet"])
             article["final_content"] = article["final_content"].replace("*", "")
             article["final_content"] = article["final_content"].replace("#", "")
@@ -49,6 +53,7 @@ def news_main():
         except Exception as e:
             print(e)
             continue
+        print(f"iterated {count} articles")
 
 if __name__ == "__main__":
     news_main()
