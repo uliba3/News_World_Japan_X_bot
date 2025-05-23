@@ -29,6 +29,7 @@ today_utc = datetime.datetime.now(datetime.timezone.utc).date()
 
 def news_main():
     articles = add_english_articles()
+    print(f"Added {len(articles)} articles")
     count = 0
     for article in articles:
         start_time = time.time()  # Start timing
