@@ -4,6 +4,7 @@ import datetime
 from tweet import tweet_text
 from gNews import add_english_articles, add_japanese_articles
 from parseNews import fetch_news_content
+import time  # Add time module import
 
 promptsDict = {
     "extract" : {
@@ -30,6 +31,7 @@ def news_main():
     articles = add_english_articles()
     count = 0
     for article in articles:
+        start_time = time.time()  # Start timing
         count += 1
         try:
             if article["date"] != today_utc:
@@ -53,7 +55,9 @@ def news_main():
         except Exception as e:
             print(e)
             continue
-        print(f"iterated {count} articles")
+        end_time = time.time()  # End timing
+        duration = end_time - start_time  # Calculate duration
+        print(f"iterated {count} articles - took {duration:.2f} seconds")
 
 if __name__ == "__main__":
     news_main()
