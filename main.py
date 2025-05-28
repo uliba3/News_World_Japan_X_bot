@@ -54,6 +54,7 @@ def news_main():
             if len(f"{article['final_content']}") <= 117:
                 tweet_text("neutral", f"{article['final_content']}\n{article['url']}")
         except Exception as e:
+            print(f"iterated {count} articles - took {time.time() - start_time:.2f} seconds")
             print(e)
             continue
         end_time = time.time()  # End timing
