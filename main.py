@@ -27,12 +27,13 @@ articles = [{
 
 today_utc = datetime.datetime.now(datetime.timezone.utc).date()
 
-def news_main():
+def news_main(start):
     articles = add_english_articles()
     print(f"Added {len(articles)} articles")
     count = 0
     for article in articles:
         start_time = time.time()  # Start timing
+        print(f"took {start_time - start}")
         count += 1
         try:
             if article["date"] != today_utc:
@@ -54,12 +55,11 @@ def news_main():
             if len(f"{article['final_content']}") <= 117:
                 tweet_text("neutral", f"{article['final_content']}\n{article['url']}")
         except Exception as e:
-            print(f"iterated {count} articles - took {time.time() - start_time:.2f} seconds")
+            print(f"iterated {count} articles - took {time.time() - start_time:.2f} seconds {time.time() - start} seconds from beginning")
             print(e)
             continue
-        end_time = time.time()  # End timing
-        duration = end_time - start_time  # Calculate duration
-        print(f"iterated {count} articles - took {duration:.2f} seconds")
+        print(f"iterated {count} articles - took {time.time() - start_time:.2f} seconds {time.time() - start} seconds from beginning")
 
 if __name__ == "__main__":
-    news_main()
+    s = time.time()
+    news_main(s)
