@@ -31,7 +31,7 @@ def news_main(start):
     articles = add_english_articles()
     print(f"Added {len(articles)} articles")
     count = 0
-    for article in articles:
+    for article in articles[:10]:
         start_time = time.time()  # Start timing
         print(f"took {start_time - start}")
         count += 1
